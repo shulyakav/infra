@@ -2,12 +2,23 @@
 "builders": [
 {
 "type": "googlecompute",
-"project_id": "nodal-component-194711",
+"project_id": "infra-213220",
 "image_name": "reddit-base-{{timestamp}}",
 "source_image": "ubuntu-1604-xenial-v20180808",
 "zone": "europe-west1-b",
 "ssh_username": "appuser",
 "machine_type": "f1-micro"
+}
+],
+"provisioners": [
+{
+"type": "shell",
+"script": "scripts/install_ruby.sh"
+},
+{
+"type": "shell",
+"script": "scripts/install_mongodb.sh",
+"execute_command": "sudo {{.Path}}"
 }
 ]
 }

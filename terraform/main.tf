@@ -1,21 +1,25 @@
 provider "google" {
-         project = "infra-213220"
-         region = "europe-west1"
+  project = "${var.project}"
+  region  = "${var.project}"
 }
 
 resource "google_compute_firewall" "firewall_puma" {
-name = "allow-puma-default"
-# Название сети, в которой действует правило
-network = "default"
-# Какой доступ разрешить
-allow {
-protocol = "tcp"
-ports = ["9292"]
-}
-# Каким адресам разрешаем доступ
-source_ranges = ["0.0.0.0/0"]
-# Правило применимо для инстансов с тегом …
-target_tags = ["reddit-app"]
+  name = "allow-puma-default"
+
+  # Название сети, в которой действует правило
+  network = "default"
+
+  # Какой доступ разрешить
+  allow {
+    protocol = "tcp"
+    ports    = ["9292"]
+  }
+
+  # Каким адресам разрешаем доступ
+  source_ranges = ["0.0.0.0/0"]
+
+  # Правило применимо для инстансов с тегом …
+  target_tags = ["reddit-app"]
 }
 
 resource "google_compute_instance" "app" {
@@ -26,12 +30,12 @@ resource "google_compute_instance" "app" {
   # определение загрузочного диска
   boot_disk {
     initialize_params {
-      image = "reddit-base-1534196180"
+      image = "${var.disk_image}"
     }
   }
 
   metadata {
-    sshKeys = "appuser:${file("~/.ssh/appuser.pub")}"
+    sshKeys = "appuser:${file(var.public_key_path)}"
   }
 
   tags = ["reddit-app"]
